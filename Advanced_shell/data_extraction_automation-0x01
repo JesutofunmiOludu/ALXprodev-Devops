@@ -1,0 +1,19 @@
+#!/bin/bash
+
+JSON_FILE="data.json"
+
+if [ ! -f "${JSON_FILE}" ]; then
+    echo "Error: ${JSON_FILE} not found!"
+    echo "Please run the fetch script first to create the data file."
+    exit 1
+fi
+
+name=$(jq -r '.name' "${JSON_FILE}")
+height=$(jq -r '.height' "${JSON_FILE}")
+weight=$(jq -r '.weight' "${JSON_FILE}")
+type=$(jq -r '.types[0].type.name' "${JSON_FILE}")
+height_meters=$(echo "${height}" | awk '{printf "%.1f", $1/10}')
+weight_kg=$(echo "${weight}" | awk '{printf "%.0f", $1/10}')
+name_capitalized=$(echo "${name}" | sed 's/^./\U&/')
+type_capitalized=$(echo "${type}" | sed 's/^./\U&/')
+echo "${name_capitalized} is of type ${type_capitalized}, weighs ${weight_kg}kg, and is ${height_meters}m tall."
